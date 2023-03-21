@@ -1,0 +1,13 @@
+{
+  "name": "views",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "serve": "webpack-dev-server"
+  },
+  "devDependencies": {
+    "webpack": "3.10.0",
+    "webpack-dev-server": "2.9.7"
+  }
+}

@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <script type="text/javascript" src="../js/jquery.js"></script>
+    <!-- import Vue before Element -->
+    <script type="text/javascript" src="../js/vueMin.js"></script>
+    <!-- import JavaScript -->
+    <script src="../js/axios.js" crossorigin="anonymous"></script>
+    <!-- element引入樣式 -->
+    <link rel="stylesheet" href="../css/elementUI.css">
+    <!-- element引入组件库 -->
+    <script src="../js/elementUI.js"></script>
+
+    <!--bootstrap -->
+    <link rel="stylesheet" href="../css/bootstrap.css" crossorigin="anonymous">
+    <script src="../js/bootstrap.js" crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" type="text/css" href="../css/practice.css" />
+    <title>公佈欄</title>
+</head>
+
+<body>
+    <div id="app">
+        <div class="backpic"></div>
+        <h1><b>公佈欄項目</b></h1><br>
+        <label for="queryKey">搜索帳號:</label>
+        <input class="form-control" v-model="queryKey" id="queryKey" name="queryKey" />
+        <el-button @click="query()" id="btnSearch">搜尋</el-button><br>
+
+        <el-button @click="visible=true" class="btn btn-outline-dark btnToInside">新增/修改</el-button>
+        <el-dialog :visible.sync="visible" title="新增/修改">
+            <div class="modal-body">
+                <form id="createForm">
+                    Oid：<input v-model="cOid" type="text" SIZE=5 />
+                    名稱：<input v-model="connName" type="text" SIZE=5 />
+                    <label for="dbType">DB 類型：</label>
+                    <select v-model="dbType">
+                        <option value=" 3-Oracle">Oracle</option>
+                        <option value="2-MSSQL">MSSQL</option>
+                        <option value="1-MySQL">MySQL</option>
+                    </select><br>
+                    帳號：<input v-model="dbUser" type="text" SIZE=5 />
+                    密碼：<input v-model="dbPwd" type="text" SIZE=5 />
+                    URL：<input v-model="dbUrl" type="text" SIZE=5 />
+                    owner：<input v-model="dbOwner" type="text" SIZE=5 /><br>
+                    <input @click="create" class="btn btn-outline-info btnIn" id="btnCreate" type="button" value="新增" />
+                    <input @click="update" class="btn btn-outline-warning btnIn" id="btnUpdate" type="button"
+                        value="修改" /><br>
+            </div>
+        </el-dialog>
+
+        <!-- 同時有兩個class名稱 -->
+        <table id="tableId" class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>編號</th>
+                    <th>帳號</th>
+                    <th>標題</th>
+                    <th>公布事項</th>
+                    <th>公布日期</th>
+                    <th>截止日期</th>
+                    <!-- <th>DB OWNER</th> -->
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="(data) in dataList">
+                    <td>
+                        <button @click="del(data.oid)" class="btn btn-outline-danger btn-sm">刪除</button>
+                    </td>
+                    <td>{{ data.oid }}</td>
+                    <td>{{ data.userId }}</td>
+                    <td>{{ data.title }}</td>
+                    <td>{{ data.message }}</td>
+                    <td>{{ data.createTime }}</td>
+                    <td>{{ data.endTime }}</td>
+                    <!-- <td>{{ data.dbOwner }}</td> -->
+                </tr>
+            </tbody>
+            <table>
+
+    </div>
+</body>
+
+
+<script>
+
+    new Vue({
+        el: '#app',
+        data: {
+            queryKey: "",
+            dataList: [],
+            visible: false,
+            cOid: "",
+            userId: "",
+            title: "",
+            message: "",
+            createTime: "",
+            endTime: "",
+            // dbOwner: "",
+        },
+        created() {
+            this.query();
+        },
+        methods: {
+            query() {
+                axios.post("api/connInfo/list", { oid: this.queryKey }).then((res) => {
+                    console.log("api");
+                    this.dataList = res.data.data;
+                })
+            },
+            del(oid) {
+                if (typeof oid === 'undefined') {
+                    alert("請勾選欲操作之項目");
+                } else {
+                    axios.post("api/connInfo/delete", { oid }).then(() => {
+                        // TODO checkBox 綁定事件 再取值
+                        this.query();
+                    }).catch(() => {
+                        alert("刪除失敗!!");
+                    })
+                }
+            },
+            create() {
+
+                axios.post("api/connInfo/create", this.inspection()).then(() => {
+                    this.query();
+                }).catch(() => {
+                    alert("新增失敗!!");
+                });
+            },
+            update() {
+                axios.post("api/connInfo/update", this.inspection()).then(() => {
+                    this.query();
+                }).catch(() => {
+                    alert("修改失敗!!");
+                })
+            },
+            inspection() {
+                return {
+                    oid: this.cOid == "" ? null : this.cOid,
+                    userId: this.userId == "" ? null : this.userId,
+                    title: this.title,
+                    message: this.message == "" ? null : this.message,
+                    createTime: this.createTime == "" ? null : this.createTime,
+                    endTime: this.endTime == "" ? null : this.endTime,
+                    // dbOwner: this.dbOwner == "" ? null : this.dbOwner
+                }
+
+            },
+
+        },
+    })
+</script>
+
+
+</html>

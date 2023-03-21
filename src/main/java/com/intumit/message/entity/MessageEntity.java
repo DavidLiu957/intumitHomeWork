@@ -1,7 +1,10 @@
 package com.intumit.message.entity;
 
+import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
@@ -19,8 +22,14 @@ import lombok.Setter;
 @NotNull
 @Builder
 @Table(name = "MESSAGE")
-public class MessageEntity {
+public class MessageEntity implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	@Id
 	@Column(name = "USER_ID")
 	private String userId;
 

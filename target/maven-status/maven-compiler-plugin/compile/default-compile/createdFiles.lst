@@ -4,4 +4,5 @@ com\intumit\message\entity\MessageEntity$MessageEntityBuilder.class
 com\intumit\message\repository\MessageRepository.class
 com\intumit\message\service\MessageService.class
 com\intumit\message\vo\BasicOut$BasicOutBuilder.class
+com\intumit\message\Application.class
 com\intumit\message\entity\MessageEntity.class
